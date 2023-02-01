@@ -36,6 +36,10 @@
 const int InputEvent::DEVICE_ID_TOUCH_MOUSE = -1;
 const int InputEvent::DEVICE_ID_INTERNAL = -2;
 
+const int InputEvent::TOOL_TYPE_UNKNOWN = 0;
+const int InputEvent::TOOL_TYPE_FINGER = 1;
+const int InputEvent::TOOL_TYPE_PEN = 2;
+
 void InputEvent::set_device(int p_device) {
 	device = p_device;
 }
@@ -920,6 +924,14 @@ int InputEventScreenTouch::get_index() const {
 	return index;
 }
 
+
+void InputEventScreenTouch::set_tool_type(int p_tool_type) {
+    tool_type = p_tool_type;
+}
+int InputEventScreenTouch::get_tool_type() const {
+    return tool_type;
+}
+
 void InputEventScreenTouch::set_position(const Vector2 &p_pos) {
 	pos = p_pos;
 }
@@ -939,6 +951,7 @@ Ref<InputEvent> InputEventScreenTouch::xformed_by(const Transform2D &p_xform, co
 	st.instance();
 	st->set_device(get_device());
 	st->set_index(index);
+    st->set_tool_type(get_tool_type());
 	st->set_position(p_xform.xform(pos + p_local_ofs));
 	st->set_pressed(pressed);
 
@@ -946,12 +959,15 @@ Ref<InputEvent> InputEventScreenTouch::xformed_by(const Transform2D &p_xform, co
 }
 
 String InputEventScreenTouch::as_text() const {
-	return "InputEventScreenTouch : index=" + itos(index) + ", pressed=" + (pressed ? "true" : "false") + ", position=(" + String(get_position()) + ")";
+	return "InputEventScreenTouch : index=" + itos(index) + " tool_type=" + itos(tool_type) + ", pressed=" + (pressed ? "true" : "false") + ", position=(" + String(get_position()) + ")";
 }
 
 void InputEventScreenTouch::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_index", "index"), &InputEventScreenTouch::set_index);
 	ClassDB::bind_method(D_METHOD("get_index"), &InputEventScreenTouch::get_index);
+
+    ClassDB::bind_method(D_METHOD("set_tool_type", "tool_type"), &InputEventScreenTouch::set_tool_type);
+    ClassDB::bind_method(D_METHOD("get_tool_type"), &InputEventScreenTouch::get_tool_type);
 
 	ClassDB::bind_method(D_METHOD("set_position", "position"), &InputEventScreenTouch::set_position);
 	ClassDB::bind_method(D_METHOD("get_position"), &InputEventScreenTouch::get_position);
@@ -967,6 +983,7 @@ void InputEventScreenTouch::_bind_methods() {
 InputEventScreenTouch::InputEventScreenTouch() {
 	index = 0;
 	pressed = false;
+    tool_type = TOOL_TYPE_UNKNOWN;
 }
 
 /////////////////////////////

@@ -164,6 +164,7 @@ public class GodotInputHandler implements InputManager.InputDeviceListener {
 			}
 			final int action = event.getActionMasked();
 			final int pointer_idx = event.getPointerId(event.getActionIndex());
+			final int toolType = event.getToolType(pointer_idx);
 
 			switch (action) {
 				case MotionEvent.ACTION_DOWN:
@@ -172,7 +173,7 @@ public class GodotInputHandler implements InputManager.InputDeviceListener {
 				case MotionEvent.ACTION_MOVE:
 				case MotionEvent.ACTION_POINTER_UP:
 				case MotionEvent.ACTION_POINTER_DOWN: {
-					GodotLib.touch(event.getSource(), action, pointer_idx, evcount, arr);
+					GodotLib.touch(event.getSource(), toolType, action, pointer_idx, evcount, arr);
 				} break;
 			}
 		}
@@ -422,7 +423,10 @@ public class GodotInputHandler implements InputManager.InputDeviceListener {
 				final float y = event.getY();
 				final int buttonsMask = event.getButtonState();
 				final int action = event.getAction();
-				GodotLib.touch(event.getSource(), action, 0, 1, new float[] { 0, x, y }, buttonsMask);
+				final int pointer_idx = event.getPointerId(event.getActionIndex());
+				final int toolType = event.getToolType(pointer_idx);
+
+				GodotLib.touch(event.getSource(), toolType, action, 0, 1, new float[] { 0, x, y }, buttonsMask);
 				return true;
 			}
 			case MotionEvent.ACTION_SCROLL: {
@@ -432,7 +436,10 @@ public class GodotInputHandler implements InputManager.InputDeviceListener {
 				final int action = event.getAction();
 				final float verticalFactor = event.getAxisValue(MotionEvent.AXIS_VSCROLL);
 				final float horizontalFactor = event.getAxisValue(MotionEvent.AXIS_HSCROLL);
-				GodotLib.touch(event.getSource(), action, 0, 1, new float[] { 0, x, y }, buttonsMask, verticalFactor, horizontalFactor);
+				final int pointer_idx = event.getPointerId(event.getActionIndex());
+				final int toolType = event.getToolType(pointer_idx);
+
+				GodotLib.touch(event.getSource(), toolType, action, 0, 1, new float[] { 0, x, y }, buttonsMask, verticalFactor, horizontalFactor);
 			}
 		}
 		return false;

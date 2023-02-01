@@ -108,7 +108,9 @@ void AndroidInputHandler::process_key_event(int p_keycode, int p_scancode, int p
 	input->parse_input_event(ev);
 }
 
-void AndroidInputHandler::process_touch(int p_event, int p_pointer, const Vector<TouchPos> &p_points) {
+void AndroidInputHandler::process_touch(int p_event, int tool_type, int p_pointer,
+                                        const Vector<TouchPos> &p_points) {
+
 	switch (p_event) {
 		case AMOTION_EVENT_ACTION_DOWN: { //gesture begin
 			if (touch.size()) {
@@ -116,6 +118,7 @@ void AndroidInputHandler::process_touch(int p_event, int p_pointer, const Vector
 				for (int i = 0; i < touch.size(); i++) {
 					Ref<InputEventScreenTouch> ev;
 					ev.instance();
+                    ev->set_tool_type(tool_type);
 					ev->set_index(touch[i].id);
 					ev->set_pressed(false);
 					ev->set_position(touch[i].pos);
@@ -134,6 +137,7 @@ void AndroidInputHandler::process_touch(int p_event, int p_pointer, const Vector
 				Ref<InputEventScreenTouch> ev;
 				ev.instance();
 				ev->set_index(touch[i].id);
+                ev->set_tool_type(tool_type);
 				ev->set_pressed(true);
 				ev->set_position(touch[i].pos);
 				input->parse_input_event(ev);
@@ -161,6 +165,7 @@ void AndroidInputHandler::process_touch(int p_event, int p_pointer, const Vector
 				Ref<InputEventScreenDrag> ev;
 				ev.instance();
 				ev->set_index(touch[i].id);
+                // TODO: add tool type to InputEventScreenDrag
 				ev->set_position(p_points[idx].pos);
 				ev->set_relative(p_points[idx].pos - touch[i].pos);
 				input->parse_input_event(ev);
@@ -176,6 +181,7 @@ void AndroidInputHandler::process_touch(int p_event, int p_pointer, const Vector
 					Ref<InputEventScreenTouch> ev;
 					ev.instance();
 					ev->set_index(touch[i].id);
+                    ev->set_tool_type(tool_type);
 					ev->set_pressed(false);
 					ev->set_position(touch[i].pos);
 					input->parse_input_event(ev);
@@ -193,6 +199,7 @@ void AndroidInputHandler::process_touch(int p_event, int p_pointer, const Vector
 					ev.instance();
 
 					ev->set_index(tp.id);
+                    ev->set_tool_type(tool_type);
 					ev->set_pressed(true);
 					ev->set_position(tp.pos);
 					input->parse_input_event(ev);
@@ -207,6 +214,7 @@ void AndroidInputHandler::process_touch(int p_event, int p_pointer, const Vector
 					Ref<InputEventScreenTouch> ev;
 					ev.instance();
 					ev->set_index(touch[i].id);
+                    ev->set_tool_type(tool_type);
 					ev->set_pressed(false);
 					ev->set_position(touch[i].pos);
 					input->parse_input_event(ev);

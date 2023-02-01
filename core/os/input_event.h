@@ -205,6 +205,10 @@ protected:
 public:
 	static const int DEVICE_ID_TOUCH_MOUSE;
 	static const int DEVICE_ID_INTERNAL;
+    static const int TOOL_TYPE_UNKNOWN;
+    // TODO: Either remove these constants or use them with helper methods.
+    static const int TOOL_TYPE_FINGER;
+    static const int TOOL_TYPE_PEN;
 
 	void set_device(int p_device);
 	int get_device() const;
@@ -473,6 +477,7 @@ public:
 class InputEventScreenTouch : public InputEvent {
 	GDCLASS(InputEventScreenTouch, InputEvent);
 	int index;
+    int tool_type;
 	Vector2 pos;
 	bool pressed;
 
@@ -482,6 +487,9 @@ protected:
 public:
 	void set_index(int p_index);
 	int get_index() const;
+
+    void set_tool_type(int p_tool_type);
+    int get_tool_type() const;
 
 	void set_position(const Vector2 &p_pos);
 	Vector2 get_position() const;
