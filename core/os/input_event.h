@@ -506,6 +506,7 @@ public:
 class InputEventScreenDrag : public InputEvent {
 	GDCLASS(InputEventScreenDrag, InputEvent);
 	int index;
+    int tool_type;
 	Vector2 pos;
 	Vector2 relative;
 	Vector2 speed;
@@ -516,6 +517,9 @@ protected:
 public:
 	void set_index(int p_index);
 	int get_index() const;
+
+    void set_tool_type(int p_tool_type);
+    int get_tool_type() const;
 
 	void set_position(const Vector2 &p_pos);
 	Vector2 get_position() const;

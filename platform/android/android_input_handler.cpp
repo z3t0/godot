@@ -165,7 +165,7 @@ void AndroidInputHandler::process_touch(int p_event, int tool_type, int p_pointe
 				Ref<InputEventScreenDrag> ev;
 				ev.instance();
 				ev->set_index(touch[i].id);
-                // TODO: add tool type to InputEventScreenDrag
+                ev->set_tool_type(tool_type);
 				ev->set_position(p_points[idx].pos);
 				ev->set_relative(p_points[idx].pos - touch[i].pos);
 				input->parse_input_event(ev);

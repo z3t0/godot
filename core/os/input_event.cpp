@@ -994,6 +994,14 @@ void InputEventScreenDrag::set_index(int p_index) {
 
 int InputEventScreenDrag::get_index() const {
 	return index;
+
+}
+
+void InputEventScreenDrag::set_tool_type(int p_tool_type) {
+    tool_type = p_tool_type;
+}
+int InputEventScreenDrag::get_tool_type() const {
+    return tool_type;
 }
 
 void InputEventScreenDrag::set_position(const Vector2 &p_pos) {
@@ -1025,6 +1033,7 @@ Ref<InputEvent> InputEventScreenDrag::xformed_by(const Transform2D &p_xform, con
 	sd->set_device(get_device());
 
 	sd->set_index(index);
+    sd->set_tool_type(get_tool_type());
 	sd->set_position(p_xform.xform(pos + p_local_ofs));
 	sd->set_relative(p_xform.basis_xform(relative));
 	sd->set_speed(p_xform.basis_xform(speed));
@@ -1033,7 +1042,7 @@ Ref<InputEvent> InputEventScreenDrag::xformed_by(const Transform2D &p_xform, con
 }
 
 String InputEventScreenDrag::as_text() const {
-	return "InputEventScreenDrag : index=" + itos(index) + ", position=(" + String(get_position()) + "), relative=(" + String(get_relative()) + "), speed=(" + String(get_speed()) + ")";
+	return "InputEventScreenDrag : index=" + itos(index) + " tool_type=" + itos(tool_type) + ", position=(" + String(get_position()) + "), relative=(" + String(get_relative()) + "), speed=(" + String(get_speed()) + ")";
 }
 
 bool InputEventScreenDrag::accumulate(const Ref<InputEvent> &p_event) {
@@ -1056,6 +1065,9 @@ void InputEventScreenDrag::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_index", "index"), &InputEventScreenDrag::set_index);
 	ClassDB::bind_method(D_METHOD("get_index"), &InputEventScreenDrag::get_index);
 
+    ClassDB::bind_method(D_METHOD("set_tool_type", "tool_type"), &InputEventScreenDrag::set_tool_type);
+    ClassDB::bind_method(D_METHOD("get_tool_type"), &InputEventScreenDrag::get_tool_type);
+
 	ClassDB::bind_method(D_METHOD("set_position", "position"), &InputEventScreenDrag::set_position);
 	ClassDB::bind_method(D_METHOD("get_position"), &InputEventScreenDrag::get_position);
 
@@ -1073,6 +1085,7 @@ void InputEventScreenDrag::_bind_methods() {
 
 InputEventScreenDrag::InputEventScreenDrag() {
 	index = 0;
+    tool_type = TOOL_TYPE_UNKNOWN;
 }
 /////////////////////////////
 
