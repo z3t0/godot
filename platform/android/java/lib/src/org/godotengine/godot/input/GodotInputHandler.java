@@ -155,16 +155,18 @@ public class GodotInputHandler implements InputManager.InputDeviceListener {
 			return true;
 
 		if (godotView != null) {
-			final float[] arr = new float[event.getPointerCount() * 3]; // pointerId1, x1, y1, pointerId2, etc...
+			final int EVENT_LENGTH = 4;
+			final float[] arr = new float[event.getPointerCount() * EVENT_LENGTH]; // pointerId1, toolType, x1, y1, pointerId2, etc...
 
 			for (int i = 0; i < event.getPointerCount(); i++) {
-				arr[i * 3 + 0] = event.getPointerId(i);
-				arr[i * 3 + 1] = event.getX(i);
-				arr[i * 3 + 2] = event.getY(i);
+				arr[i * EVENT_LENGTH + 0] = event.getPointerId(i);;
+				arr[i * EVENT_LENGTH + 1] = event.getToolType(i);
+				arr[i * EVENT_LENGTH + 2] = event.getX(i);
+				arr[i * EVENT_LENGTH + 3] = event.getY(i);
 			}
 			final int action = event.getActionMasked();
 			final int pointer_idx = event.getPointerId(event.getActionIndex());
-			final int toolType = event.getToolType(pointer_idx);
+
 
 			switch (action) {
 				case MotionEvent.ACTION_DOWN:
@@ -173,7 +175,7 @@ public class GodotInputHandler implements InputManager.InputDeviceListener {
 				case MotionEvent.ACTION_MOVE:
 				case MotionEvent.ACTION_POINTER_UP:
 				case MotionEvent.ACTION_POINTER_DOWN: {
-					GodotLib.touch(event.getSource(), toolType, action, pointer_idx, evcount, arr);
+					GodotLib.touch(event.getSource(), action, pointer_idx, evcount, arr);
 				} break;
 			}
 		}
@@ -423,10 +425,8 @@ public class GodotInputHandler implements InputManager.InputDeviceListener {
 				final float y = event.getY();
 				final int buttonsMask = event.getButtonState();
 				final int action = event.getAction();
-				final int pointer_idx = event.getPointerId(event.getActionIndex());
-				final int toolType = event.getToolType(pointer_idx);
 
-				GodotLib.touch(event.getSource(), toolType, action, 0, 1, new float[] { 0, x, y }, buttonsMask);
+				GodotLib.touch(event.getSource(), action, 0, 1, new float[] { 0, 0, x, y }, buttonsMask);
 				return true;
 			}
 			case MotionEvent.ACTION_SCROLL: {
@@ -436,10 +436,8 @@ public class GodotInputHandler implements InputManager.InputDeviceListener {
 				final int action = event.getAction();
 				final float verticalFactor = event.getAxisValue(MotionEvent.AXIS_VSCROLL);
 				final float horizontalFactor = event.getAxisValue(MotionEvent.AXIS_HSCROLL);
-				final int pointer_idx = event.getPointerId(event.getActionIndex());
-				final int toolType = event.getToolType(pointer_idx);
 
-				GodotLib.touch(event.getSource(), toolType, action, 0, 1, new float[] { 0, x, y }, buttonsMask, verticalFactor, horizontalFactor);
+				GodotLib.touch(event.getSource(), action, 0, 1, new float[] { 0, 0, x, y }, buttonsMask, verticalFactor, horizontalFactor);
 			}
 		}
 		return false;

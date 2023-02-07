@@ -94,9 +94,9 @@ public class GodotLib {
 	/**
 	 * Forward touch events from the main thread to the GL thread.
 	 */
-	public static native void touch(int inputDevice, int toolType, int event, int pointer, int pointerCount, float[] positions);
-	public static native void touch(int inputDevice,int toolType, int event, int pointer, int pointerCount, float[] positions, int buttonsMask);
-	public static native void touch(int inputDevice, int toolType,int event, int pointer, int pointerCount, float[] positions, int buttonsMask, float verticalFactor, float horizontalFactor);
+	public static native void touch(int inputDevice, int event, int pointer, int pointerCount, float[] positions);
+	public static native void touch(int inputDevice, int event, int pointer, int pointerCount, float[] positions, int buttonsMask);
+	public static native void touch(int inputDevice,int event, int pointer, int pointerCount, float[] positions, int buttonsMask, float verticalFactor, float horizontalFactor);
 
 	/**
 	 * Forward hover events from the main thread to the GL thread.

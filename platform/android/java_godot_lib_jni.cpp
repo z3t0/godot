@@ -275,41 +275,44 @@ JNIEXPORT jboolean JNICALL Java_org_godotengine_godot_GodotLib_step(JNIEnv *env,
 	return should_swap_buffers;
 }
 
-void touch_preprocessing(JNIEnv *env, jclass clazz, jint input_device, jint tool_type, jint ev, jint pointer, jint pointer_count, jfloatArray positions, jint buttons_mask, jfloat vertical_factor, jfloat horizontal_factor) {
+void touch_preprocessing(JNIEnv *env, jclass clazz, jint input_device, jint ev, jint pointer, jint pointer_count, jfloatArray positions, jint buttons_mask, jfloat vertical_factor, jfloat horizontal_factor) {
 
     if (step.get() <= 0) {
 		return;
 	}
 	Vector<AndroidInputHandler::TouchPos> points;
 	for (int i = 0; i < pointer_count; i++) {
-		jfloat p[3];
-		env->GetFloatArrayRegion(positions, i * 3, 3, p);
+        int EVENT_LENGTH = 4;
+		jfloat p[EVENT_LENGTH];
+		env->GetFloatArrayRegion(positions, i * EVENT_LENGTH, EVENT_LENGTH, p);
 		AndroidInputHandler::TouchPos tp;
-		tp.pos = Point2(p[1], p[2]);
 		tp.id = (int)p[0];
-		points.push_back(tp);
+        tp.tool_type = (int) p[1] ;
+        tp.pos = Point2(p[2], p[3]);
+
+        points.push_back(tp);
 	}
 
 	if ((input_device & AINPUT_SOURCE_MOUSE) == AINPUT_SOURCE_MOUSE) {
 		input_handler->process_mouse_event(ev, buttons_mask, points[0].pos, vertical_factor, horizontal_factor);
 	} else {
-        input_handler->process_touch(ev, tool_type, pointer, points);
+        input_handler->process_touch(ev, pointer, points);
 	}
 }
 
 // Called on the UI thread
-JNIEXPORT void JNICALL Java_org_godotengine_godot_GodotLib_touch__IIIII_3F(JNIEnv *env, jclass clazz, jint input_device, jint tool_type, jint ev, jint pointer, jint pointer_count, jfloatArray position) {
-	touch_preprocessing(env, clazz, input_device, tool_type, ev, pointer, pointer_count, position);
+JNIEXPORT void JNICALL Java_org_godotengine_godot_GodotLib_touch__IIII_3F(JNIEnv *env, jclass clazz, jint input_device, jint ev, jint pointer, jint pointer_count, jfloatArray position) {
+	touch_preprocessing(env, clazz, input_device, ev, pointer, pointer_count, position);
 }
 
 // Called on the UI thread
-JNIEXPORT void JNICALL Java_org_godotengine_godot_GodotLib_touch__IIIII_3FI(JNIEnv *env, jclass clazz, jint input_device, jint tool_type, jint ev, jint pointer, jint pointer_count, jfloatArray position, jint buttons_mask) {
-	touch_preprocessing(env, clazz, input_device, tool_type, ev, pointer, pointer_count, position, buttons_mask);
+JNIEXPORT void JNICALL Java_org_godotengine_godot_GodotLib_touch__IIII_3FI(JNIEnv *env, jclass clazz, jint input_device, jint ev, jint pointer, jint pointer_count, jfloatArray position, jint buttons_mask) {
+	touch_preprocessing(env, clazz, input_device, ev, pointer, pointer_count, position, buttons_mask);
 }
 
 // Called on the UI thread
-JNIEXPORT void JNICALL Java_org_godotengine_godot_GodotLib_touch__IIIII_3FIFF(JNIEnv *env, jclass clazz, jint input_device, jint tool_type, jint ev, jint pointer, jint pointer_count, jfloatArray position, jint buttons_mask, jfloat vertical_factor, jfloat horizontal_factor) {
-	touch_preprocessing(env, clazz, input_device, tool_type, ev, pointer, pointer_count, position, buttons_mask, vertical_factor, horizontal_factor);
+JNIEXPORT void JNICALL Java_org_godotengine_godot_GodotLib_touch__IIII_3FIFF(JNIEnv *env, jclass clazz, jint input_device, jint ev, jint pointer, jint pointer_count, jfloatArray position, jint buttons_mask, jfloat vertical_factor, jfloat horizontal_factor) {
+	touch_preprocessing(env, clazz, input_device, ev, pointer, pointer_count, position, buttons_mask, vertical_factor, horizontal_factor);
 }
 
 // Called on the UI thread
